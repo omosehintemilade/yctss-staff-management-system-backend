@@ -1,19 +1,16 @@
 "use strict";
-const { Model } = require("sequelize");
+
 const { documentStatus } = require("../utils/constants");
-module.exports = (sequelize, DataTypes) => {
-  class document extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  }
-  document.init(
-    {
+
+module.exports = {
+  async up(queryInterface, DataTypes) {
+    await queryInterface.createTable("documents", {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER
+      },
       uuid: {
         type: DataTypes.UUID,
         allowNull: false
@@ -34,13 +31,18 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         defaultValue: documentStatus.pending,
         allowNull: false
+      },
+      createdAt: {
+        allowNull: false,
+        type: DataTypes.DATE
+      },
+      updatedAt: {
+        allowNull: false,
+        type: DataTypes.DATE
       }
-    },
-    {
-      sequelize,
-      tableName: "documents",
-      modelName: "Document"
-    }
-  );
-  return document;
+    });
+  },
+  async down(queryInterface, DataTypes) {
+    await queryInterface.dropTable("documents");
+  }
 };

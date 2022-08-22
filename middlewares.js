@@ -9,7 +9,7 @@ const verifyUser = async (req, res, next) => {
     const token = req.headers["token"];
 
     if (!token || token == "undefined") {
-      return sendError(res, 400, {
+      return sendError(res, 401, {
         message: "Invalid request headers. Failed to authenticate token."
       });
     }
@@ -20,7 +20,7 @@ const verifyUser = async (req, res, next) => {
       }
     });
     if (!user) {
-      return sendError(res, 400, { message: "This user is not recognized" });
+      return sendError(res, 401, { message: "This user is not recognized" });
     }
 
     req.user = user;

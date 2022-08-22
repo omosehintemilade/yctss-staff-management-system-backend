@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const { userStatus } = require("../utils/constants");
 module.exports = (sequelize, DataTypes) => {
   class user extends Model {
     /**
@@ -73,6 +74,20 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING
       },
       profile_pics: {
+        type: DataTypes.STRING
+      },
+      status: {
+        type: DataTypes.INTEGER,
+        defaultValue: userStatus.pending,
+        allowNull: false
+      },
+      subject: {
+        type: DataTypes.STRING
+      },
+      nationality: {
+        type: DataTypes.STRING
+      },
+      department: {
         type: DataTypes.STRING
       }
     },

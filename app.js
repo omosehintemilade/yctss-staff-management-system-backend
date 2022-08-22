@@ -13,6 +13,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
 app.use("/users", require("./routes/user"));
+app.use("/admins", require("./routes/admin"));
 
 const port = 8000;
 

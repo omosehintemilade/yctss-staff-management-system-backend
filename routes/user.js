@@ -10,7 +10,8 @@ const {
   createExperience,
   getExperience,
   deleteFile,
-  deleteExperience
+  deleteExperience,
+  getProfile
 } = require("../controllers/users");
 const { verifyUser } = require("../middlewares");
 
@@ -18,6 +19,8 @@ const { verifyUser } = require("../middlewares");
 const upload = multer({ dest: "public/uploads/" });
 
 const router = require("express").Router();
+
+router.get("/me", verifyUser, getProfile);
 
 router.post("/create", createUser);
 

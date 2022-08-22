@@ -67,8 +67,27 @@ const login = async (req, res) => {
       return sendError(res, 400, { message: "Invalid username/password" });
     }
 
-    return sendSuccessRes(res, 201, {
+    return sendSuccessRes(res, 200, {
       message: "User logged in successfully",
+      user: user
+    });
+  } catch (error) {
+    return sendinternalServerError(res, error);
+  }
+};
+
+const getProfile = async (req, res) => {
+  try {
+    const { uuid: userId } = req.user;
+
+    const user = await User.findOne({
+      where: {
+        uuid: userId
+      }
+    });
+
+    return sendSuccessRes(res, 200, {
+      message: "User data fetched successfully",
       user: user
     });
   } catch (error) {
@@ -96,7 +115,7 @@ const editProfile = async (req, res) => {
 
     await user.save();
 
-    return sendSuccessRes(res, 201, {
+    return sendSuccessRes(res, 200, {
       message: "Biodata Updated successfully",
       user: user
     });
@@ -137,7 +156,7 @@ const resourceUpload = async (req, res) => {
 
     // console.log({ file: req.file, body: req.body.filename });
     // return;
-    if (!req.file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|pdf|PDF)$/)) {
+    if (!req.file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG)$/)) {
       fs.unlink(tempPath, function () {
         if (err) throw err;
         return sendError({
@@ -146,10 +165,21 @@ const resourceUpload = async (req, res) => {
       });
     }
 
+    const tempPath = req.file.path;
+    let originalName = req.file.originalname.replace(" ", "-");
+    originalName = `${Date.now()}_${originalName}`;
+
+    const targetPath = path.resolve("./public/uploads/" + originalName);
+
+    fs.rename(tempPath, targetPath, function (err) {
+      if (err) throw err;
+    });
+
     await Document.create({
       name: req.body.filename,
       fileId: generateRandomCode(),
-      uuid: userId
+      uuid: userId,
+      url: `uploads/${originalName}`
     });
 
     const documents = await Document.findAll({
@@ -259,6 +289,7 @@ const deleteExperience = async (req, res) => {
     sendinternalServerError(res, error);
   }
 };
+
 module.exports = {
   createUser,
   login,
@@ -269,5 +300,6 @@ module.exports = {
   getExperience,
   createExperience,
   deleteFile,
-  deleteExperience
+  deleteExperience,
+  getProfile
 };

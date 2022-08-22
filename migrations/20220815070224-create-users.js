@@ -1,4 +1,7 @@
 "use strict";
+
+const { userStatus } = require("../utils/constants");
+
 module.exports = {
   async up(queryInterface, DataTypes) {
     await queryInterface.createTable("users", {
@@ -64,6 +67,20 @@ module.exports = {
         type: DataTypes.STRING
       },
       profile_pics: {
+        type: DataTypes.STRING
+      },
+      status: {
+        type: DataTypes.INTEGER,
+        defaultValue: userStatus.pending,
+        allowNull: false
+      },
+      subject: {
+        type: DataTypes.STRING
+      },
+      department: {
+        type: DataTypes.STRING
+      },
+      nationality: {
         type: DataTypes.STRING
       },
       createdAt: {
